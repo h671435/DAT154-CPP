@@ -1,5 +1,3 @@
-#pragma once
-
 int sum(int x, int y);
 int square(int x);
 double volume_sphere(int rad);
