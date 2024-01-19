@@ -20,6 +20,20 @@ void ListCars(int *pnr, int *pbuy, int n) {
         wcout << L"Carnr: " << *(pnr + i) << L" Price: " << *(pbuy + i) << endl;
 }
 
+void FindProfit(int bprice[], int sprice[], int n) {
+    int profit = 0;
+
+    for (int i = 0; i < n; i++) {
+        profit -= bprice[i];
+    }
+
+    for (int i = 0; i < n; i++) {
+        profit += sprice[i];
+    }
+
+    wcout << L"The total profit of the cars are: " << profit << "\n";
+}
+
 int main() {
     int carnr[1000];
     int buyprice[1000];
@@ -55,6 +69,8 @@ int main() {
                 } else {
                     wcout << L"Couldnt find car with number " << nr << "\n";
                 }
+                break;
+            case 3: FindProfit(buyprice, sellprice, idx);
                 break;
             case 4: ListCars(carnr, buyprice, idx);
                 break;
