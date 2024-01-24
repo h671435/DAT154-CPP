@@ -49,27 +49,25 @@ public:
         }
     }
 
-    void ListCars() {
-        for (int i = 0; i < n; i++)
-            wcout << L"Carnr: " << *(pnr + i) << L" Price: " << *(pbuy + i) << endl;
-    }
-
     void FindProfit() {
         int profit = 0;
 
-        for (int i = 0; i < n; i++) {
-            profit -= bprice[i];
-        }
-
-        for (int i = 0; i < n; i++) {
-            profit += sprice[i];
+        for (auto car : cars) {
+            profit -= car.buyPrice;
+            profit += car.sellPrice;
         }
 
         wcout << L"The total profit of the cars are: " << profit << "\n";
     }
+
+    void ListCars() {
+        for (auto car : cars) {
+            wcout << "Car number: " << car.number << "\nBuy price: " << car.buyPrice << endl;
+        }
+    }
+
+
 };
-
-
 
 
 int main() {
