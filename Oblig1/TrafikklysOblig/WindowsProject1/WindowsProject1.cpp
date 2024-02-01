@@ -130,13 +130,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
 
     case WM_CREATE:
+        SetTimer(hWnd, 0, 100, 0);
         redBrush = CreateSolidBrush(RGB(255, 0, 0));
         yellowBrush = CreateSolidBrush(RGB(255, 255, 0));
         greenBrush = CreateSolidBrush(RGB(0, 255, 0));
         blackBrush = CreateSolidBrush(RGB(0, 0, 0));
         greyBrush = CreateSolidBrush(RGB(128, 128, 128));
         break;
-
+    case WM_TIMER:
+        
+        break;
     case WM_COMMAND:
     {
         int wmId = LOWORD(wParam);
@@ -170,35 +173,63 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         // TODO: Add any drawing code that uses hdc here...
         // Lager svart rektangel
         HGDIOBJ hOrg = SelectObject(hdc, blackBrush);
-        Rectangle(hdc, 300, 200, 450, 550);
+        Rectangle(hdc, 400, 100, 550, 450);
+        Rectangle(hdc, 700, 600, 1050, 750);
 
-        // Lager lysene
+        // Lager lysene for nord - sør
         SelectObject(hdc, greyBrush);
-        Ellipse(hdc, 320, 200, 425, 316);
-        Ellipse(hdc, 320, 316, 425, 432);
-        Ellipse(hdc, 320, 432, 425, 548);
+        Ellipse(hdc, 420, 100, 525, 216);
+        Ellipse(hdc, 420, 216, 525, 332);
+        Ellipse(hdc, 420, 332, 525, 448);
+
+        // Lager lysene for vest - øst
+        Ellipse(hdc, 700, 620, 816, 730);
+        Ellipse(hdc, 816, 620, 932, 730);
+        Ellipse(hdc, 932, 620, 1050, 730);
+
+        // Lager vei
+        Rectangle(hdc, 0, 470, 2000, 580);
+        Rectangle(hdc, 570, 0, 680, 2000);
 
 
         switch (trafikkLys) {
         case 0:
+            // Nord lys
             SelectObject(hdc, redBrush);
-            Ellipse(hdc, 320, 200, 425, 316);
-            SelectObject(hdc, greyBrush);
-            Ellipse(hdc, 320, 316, 425, 432);
+            Ellipse(hdc, 420, 100, 525, 216);
+
+            // Vest lys
+            SelectObject(hdc, greenBrush);
+            Ellipse(hdc, 700, 620, 816, 730);
             break;
         case 1:
+            // Nord lys
             SelectObject(hdc, redBrush);
-            Ellipse(hdc, 320, 200, 425, 316);
+            Ellipse(hdc, 420, 100, 525, 216);
             SelectObject(hdc, yellowBrush);
-            Ellipse(hdc, 320, 316, 425, 432);
+            Ellipse(hdc, 420, 216, 525, 332);
+
+            // Vest lys
+            Ellipse(hdc, 816, 620, 932, 730);
             break;
         case 2:
+            // Nord lys
             SelectObject(hdc, greenBrush);
-            Ellipse(hdc, 320, 432, 425, 548);
+            Ellipse(hdc, 420, 332, 525, 448);
+
+            // Vest lys
+            SelectObject(hdc, redBrush);
+            Ellipse(hdc, 932, 620, 1050, 730);
             break;
         case 3:
+            // Nord lys
             SelectObject(hdc, yellowBrush);
-            Ellipse(hdc, 320, 316, 425, 432);
+            Ellipse(hdc, 420, 216, 525, 332);
+            // Vest lys
+            Ellipse(hdc, 816, 620, 932, 730);
+
+            SelectObject(hdc, redBrush);
+            Ellipse(hdc, 932, 620, 1050, 730);
             break;
         }
 
