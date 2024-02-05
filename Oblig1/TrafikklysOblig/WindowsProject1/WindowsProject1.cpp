@@ -10,7 +10,7 @@
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
-HBRUSH redBrush, yellowBrush, greenBrush, blackBrush, greyBrush;
+HBRUSH redBrush, yellowBrush, greenBrush, blackBrush, greyBrush, whiteBrush;
 int trafikkLys = 0;
 
 // Forward declarations of functions included in this code module:
@@ -113,6 +113,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 
+void tegnBiler(HWND hWnd) {
+
+}
+
 //
 //  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
 //
@@ -123,6 +127,15 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - post a quit message and return
 //
 //
+static void oppdaterTrafikklys() {
+    if (trafikkLys >= 3) {
+        trafikkLys = 0;
+    }
+    else {
+        trafikkLys = trafikkLys + 1;
+    }
+}
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 
@@ -130,15 +143,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
 
     case WM_CREATE:
-        SetTimer(hWnd, 0, 100, 0);
+        SetTimer(hWnd, 0, 3000, 0);
         redBrush = CreateSolidBrush(RGB(255, 0, 0));
         yellowBrush = CreateSolidBrush(RGB(255, 255, 0));
         greenBrush = CreateSolidBrush(RGB(0, 255, 0));
         blackBrush = CreateSolidBrush(RGB(0, 0, 0));
         greyBrush = CreateSolidBrush(RGB(128, 128, 128));
+        whiteBrush = CreateSolidBrush(RGB(255, 255, 255));
         break;
     case WM_TIMER:
-        
+        oppdaterTrafikklys();
+        InvalidateRect(hWnd, 0, true);
         break;
     case WM_COMMAND:
     {
@@ -157,26 +172,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
     }
     break;
-    case WM_LBUTTONDOWN:
-        if (trafikkLys >= 3) {
-            trafikkLys = 0;
-        }
-        else {
-            trafikkLys = trafikkLys + 1;
-        }
-        InvalidateRect(hWnd, 0, TRUE);
-        break;
     case WM_PAINT:
     {
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hWnd, &ps);
         // TODO: Add any drawing code that uses hdc here...
         // Lager svart rektangel
+        /*
+        HDC vdc = CreateCompatibleDC(hdc);
+
+        RECT screen;
+        GetClientRect(hWnd, &screen);
+
+        HBITMAP bmp = CreateCompatibleBitmap(hdc, screen.right, screen.bottom);
+        SelectObject(vdc, bmp);
+        */
+
         HGDIOBJ hOrg = SelectObject(hdc, blackBrush);
         Rectangle(hdc, 400, 100, 550, 450);
         Rectangle(hdc, 700, 600, 1050, 750);
 
-        // Lager lysene for nord - sør
+        // Lager hdc for nord - sør
         SelectObject(hdc, greyBrush);
         Ellipse(hdc, 420, 100, 525, 216);
         Ellipse(hdc, 420, 216, 525, 332);
@@ -232,7 +248,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             Ellipse(hdc, 932, 620, 1050, 730);
             break;
         }
+        /*
+        BitBlt(hdc, 0, 0, screen.right, screen.bottom, vdc, 0, 0, SRCCOPY);
 
+        DeleteDC(vdc);
+        DeleteObject(bmp);
+        */
         EndPaint(hWnd, &ps);
     }
     break;
@@ -244,6 +265,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         DeleteObject(yellowBrush);
         DeleteObject(greyBrush);
 
+        break;
+    case WM_LBUTTONDOWN:
+        
         break;
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
