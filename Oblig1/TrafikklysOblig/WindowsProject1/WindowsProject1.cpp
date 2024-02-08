@@ -3,6 +3,8 @@
 
 #include "framework.h"
 #include "WindowsProject1.h"
+#include <deque>
+
 
 #define MAX_LOADSTRING 100
 
@@ -10,8 +12,11 @@
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
-HBRUSH redBrush, yellowBrush, greenBrush, blackBrush, greyBrush, whiteBrush;
+HBRUSH redBrush, yellowBrush, greenBrush, blackBrush, greyBrush, whiteBrush, pinkBrush;
 int trafikkLys = 0;
+std::deque<car> bilKoe1;
+std::deque<car> bilKoe2;
+
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -56,8 +61,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     return (int) msg.wParam;
 }
+// Rectangle(hdc, 5, 510, 60, 540);
 
-
+class car {
+public:
+    const int topPosisjon = 510;
+    const int botPosisjon = 540;
+    int venstre = 5;
+    int hoyre = 60;
+    int plass = 0;
+};
 
 //
 //  FUNCTION: MyRegisterClass()
@@ -113,7 +126,15 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 
-void tegnBiler(HWND hWnd) {
+void tegnBiler(HWND hWnd, HDC vdc, int vei) {
+    if (vei == 1) {
+        bilKoe1.push_front(car());
+        Rectangle(vdc, )
+    }
+    else if (vei == 2) {
+
+    }
+
 
 }
 
@@ -150,6 +171,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         blackBrush = CreateSolidBrush(RGB(0, 0, 0));
         greyBrush = CreateSolidBrush(RGB(128, 128, 128));
         whiteBrush = CreateSolidBrush(RGB(255, 255, 255));
+        pinkBrush = CreateSolidBrush(RGB(255, 20, 147));
         break;
     case WM_TIMER:
         oppdaterTrafikklys();
@@ -177,23 +199,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hWnd, &ps);
         // TODO: Add any drawing code that uses hdc here...
-        // Lager svart rektangel
-        /*
-        HDC vdc = CreateCompatibleDC(hdc);
-
-        RECT screen;
-        GetClientRect(hWnd, &screen);
-
-        HBITMAP bmp = CreateCompatibleBitmap(hdc, screen.right, screen.bottom);
-        SelectObject(vdc, bmp);
-        */
 
         HGDIOBJ hOrg = SelectObject(hdc, blackBrush);
         Rectangle(hdc, 400, 100, 550, 450);
         Rectangle(hdc, 700, 600, 1050, 750);
 
         // Lager hdc for nord - sør
-        SelectObject(hdc, greyBrush);
+        hOrg = SelectObject(hdc, greyBrush);
         Ellipse(hdc, 420, 100, 525, 216);
         Ellipse(hdc, 420, 216, 525, 332);
         Ellipse(hdc, 420, 332, 525, 448);
@@ -248,6 +260,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             Ellipse(hdc, 932, 620, 1050, 730);
             break;
         }
+
+        // Lager svart rektangel
+        /*
+        HDC vdc = CreateCompatibleDC(hdc);
+
+        RECT screen;
+        GetClientRect(hWnd, &screen);
+
+        HBITMAP bmp = CreateCompatibleBitmap(hdc, screen.right, screen.bottom);
+        SelectObject(vdc, bmp);
+        */
+        SelectObject(hdc, pinkBrush);
+        Rectangle(hdc, 5, 510, 60, 540);
+
         /*
         BitBlt(hdc, 0, 0, screen.right, screen.bottom, vdc, 0, 0, SRCCOPY);
 
